@@ -13,17 +13,12 @@ def get_schoolkid(fullname):
 
 
 def fix_bad_marks(schoolkid):
-    childs_marks = Mark.objects.filter(schoolkid=schoolkid)
-    childs_bad_marks = childs_marks.filter(points__in=[2, 3])
-    for bad_mark in childs_bad_marks:
-        bad_mark.points = 5
-        bad_mark.save()
+    Mark.objects.filter(schoolkid=schoolkid, points__in=[2, 3]).update(points=5)
 
 
 def delete_chastisements(schoolkid):
     childs_chastisements = Chastisement.objects.filter(schoolkid=schoolkid)
-    for chastisement in childs_chastisements:
-        chastisement.delete()
+    childs_chastisements.delete()
 
 
 def create_commendation(schoolkid, subject):
@@ -60,8 +55,8 @@ def create_commendation(schoolkid, subject):
         'Теперь у тебя точно все получится!'
         ]
     try:
-        lessons = Lesson.objects.filter(year_of_study=schoolkid.year_of_study, group_letter=schoolkid.group_letter)
-        lesson = lessons.filter(subject__title__contains=subject).order_by('date').first()
+         lessons = Lesson.objects.filter(year_of_study=schoolkid.year_of_study, group_letter=schoolkid.group_letter)
+        lesson = lessons.filter(subject__title__contains=subject).order_by('date').last()
         Commendation.objects.create(text=random.choice(commendations), created=lesson.date, schoolkid=schoolkid, subject=lesson.subject, teacher=lesson.teacher)
     except:
         print("Указано неправильное или несуществующее название предмета")
