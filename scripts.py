@@ -55,8 +55,7 @@ def create_commendation(schoolkid, subject):
         'Теперь у тебя точно все получится!'
         ]
     try:
-         lessons = Lesson.objects.filter(year_of_study=schoolkid.year_of_study, group_letter=schoolkid.group_letter)
-        lesson = lessons.filter(subject__title__contains=subject).order_by('date').last()
+        lesson = Lesson.objects.filter(year_of_study=schoolkid.year_of_study, group_letter=schoolkid.group_letter, subject__title__contains=subject).order_by('date').last()
         Commendation.objects.create(text=random.choice(commendations), created=lesson.date, schoolkid=schoolkid, subject=lesson.subject, teacher=lesson.teacher)
     except:
         print("Указано неправильное или несуществующее название предмета")
